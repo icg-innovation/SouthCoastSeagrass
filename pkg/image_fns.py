@@ -44,7 +44,7 @@ def QA_cloud_perc(file_list, QA_band):
 
     # Define some empty arrays for the counts.
     cloud_count = np.zero((len(file_list, )))
-    land_count = np.zeros((len(file_list, )))
+    water_count = np.zeros((len(file_list, )))
 
     # Loop over all files.
     for i, fi in enumerate(file_list):
@@ -56,20 +56,20 @@ def QA_cloud_perc(file_list, QA_band):
         # I have assumed these will be different functions but I guess they don't need to be.
         cloud_i = cloud_from_bitmask(QA)
         shadow_i = shadow_from_bitmask(QA)
-        land_i = land_from_bitmask(QA)
+        water_i = water_from_bitmask(QA)
 
         # Simply sum the boolean masks to find the total counts
         cloud_count[i] = np.sum(cloud_i)+np.sum(shadow_i)
-        land_count[i] = np.sum(land_i)
+        water_count[i] = np.sum(water_i)
 
-    return cloud_count, land_count
+    return cloud_count, water_count
 
 def cloud_from_bitmask(bitmask):
     
     
     return
 
-def land_from_bitmask(bitmask):
+def water_from_bitmask(bitmask):
     
     
     return
