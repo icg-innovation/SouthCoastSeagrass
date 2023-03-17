@@ -85,7 +85,7 @@ def water_from_bitmask(bitmask):
         bitmask_bits[:, :, bit_ix] = fetch_bit_func(strs).astype("int8")
 
     # The water bitmask is stored in bit 7 (index 15-7=8).
-    water_bitmask = bitmask_bits[:, :, 8] == 0
+    water_bitmask = bitmask_bits[:, :, 8] == 1
 
     return water_bitmask
 
