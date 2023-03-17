@@ -66,7 +66,8 @@ class ImageMasker():
         '''
         # Convert cloud data from int to binary
         cloud_bits = self.vec_bin_array(self.cloud_data, 16)
-        # Create logical array as a mask
+        # Create logical array as a mask. 
+        # Here, the 12th index corresponds to the 3rd QA (cloud) bit
         cloud_mask = cloud_bits[:, :, 12] == 1
         return cloud_mask
 
@@ -77,6 +78,7 @@ class ImageMasker():
         # Convert shadow data from int to binary
         shadow_bits = self.vec_bin_array(self.cloud_data, 16)
         # Create a logical array as a mask
+        # Here, the 11th index corresponds to the 4th QA (shadow) bit
         shadow_mask = shadow_bits[:, :, 11] == 1
         return shadow_mask
 
