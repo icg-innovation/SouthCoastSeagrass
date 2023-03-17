@@ -31,15 +31,14 @@ def LS7_band_mask(rgb_raster):
 
 def QA_cloud_perc(file_list, QA_band):
     '''
-    With a given list of ``.tif`` files that contain ``QA_PIXEL`` find the number of cloudy or shadowy pixels 
-    along with the number of land pixels according to the bitmask
+    With a given list of ``.tif`` files that contain ``QA_PIXEL`` find the number of water pixels
+    according to the bitmask
 
     Args:
         file_list (list): List of file names.
         QA_band (int): The band id for the ``QA_PIXEL`` bitmask.
     Returns:
-        cloud_count (array): Nummber of cloudy or shadowy pixels in each file, will have same length as ``file_list``.
-        land_count (array): Nummber of land pixels in each file, will have same length as ``file_list``.
+        water_count (array): Nummber of water pixels in each file, will have same length as ``file_list``.
     '''
 
     # Define some empty arrays for the counts.
@@ -52,29 +51,15 @@ def QA_cloud_perc(file_list, QA_band):
         # Load bitmask
         QA = rasterio.open(fi).read(QA_band)
 
-        # Find the boolean masks from the bit mask.
-        # I have assumed these will be different functions but I guess they don't need to be.
-        cloud_i = cloud_from_bitmask(QA)
-        shadow_i = shadow_from_bitmask(QA)
+        # Find the boolean mask from the bit mask.
         water_i = water_from_bitmask(QA)
 
         # Simply sum the boolean masks to find the total counts
-        cloud_count[i] = np.sum(cloud_i)+np.sum(shadow_i)
         water_count[i] = np.sum(water_i)
 
-    return cloud_count, water_count
-
-def cloud_from_bitmask(bitmask):
-    
-    
-    return
+    return water_count
 
 def water_from_bitmask(bitmask):
-    
-    
-    return
-
-def shadow_from_bitmask(bitmask):
     
     
     return
