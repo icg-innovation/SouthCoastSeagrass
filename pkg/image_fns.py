@@ -42,7 +42,6 @@ def QA_cloud_perc(file_list, QA_band):
     '''
 
     # Define some empty arrays for the counts.
-    cloud_count = np.zero((len(file_list, )))
     water_count = np.zeros((len(file_list, )))
 
     # Loop over all files.
