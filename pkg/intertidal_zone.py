@@ -42,7 +42,7 @@ def get_intertidal_zone_mask(paths_to_files, filter_cloudy=True,
     --------------------------------------------------------------------------------------------------
     '''
 
-    # If specified fileter out cloudy images.
+    # If specified filter out cloudy images.
     if filter_cloudy:
         good_files = filter_cloudy_files(paths_to_files, tol)
     else:
