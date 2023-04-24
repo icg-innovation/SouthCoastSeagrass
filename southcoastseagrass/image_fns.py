@@ -113,3 +113,30 @@ def calculate_cloud_percentage(water_counts):
     cover_percents = 100*(water_counts / water_counts.max())
 
     return cover_percents
+
+def combine_bool_masks(mask_list):
+    '''
+    Combine boolean pixel masks with pixelwise ``and``.
+
+    Args:
+        mask_list (list): List of arrays. Each element of the list should be a
+         an array for a different mask (i.e. first element: cloud, second
+         element: water). The dimensions of the arrays needs to match. The
+          arrays also need to be consistenet in terms of what defines a masked
+          pixel (i.e. is ``True`` or ``False`` a masked pixel).
+    '''
+
+    # Stack masks into (n_mask, nx, ny) array
+    mask_array = np.stack(mask_list)
+
+    # Product along the fist axis.
+    # Results in an AND for each pixel.
+    combo_mask = np.prod(
+        mask_array,
+        axis=0
+        )
+
+    # Make the combined mask a bool for each pixel
+    combo_mask = combo_mask.astype(bool)
+
+    return combo_mask
