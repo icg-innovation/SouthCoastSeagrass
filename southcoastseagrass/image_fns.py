@@ -60,7 +60,7 @@ def QA_cloud_perc(file_list, QA_band):
 
 def mask_from_bitmask(bitmask, mask_type):
     '''
-    Converts a earth engine QA bitmask to a boolean array of water pixels.
+    Converts an earth engine QA bitmask to a boolean array of ``mask_type`` pixels.
     Bitmask array conversion from https://stackoverflow.com/questions/22227595/convert-integer-to-binary-array-with-suitable-padding
     
     Args:
@@ -93,9 +93,9 @@ def mask_from_bitmask(bitmask, mask_type):
         bitmask_bits[:, :, bit_ix] = fetch_bit_func(strs).astype("int8")
 
     # The water bitmask is stored in bit 7 (index 15-7=8).
-    water_bitmask = bitmask_bits[:, :, idx_dict[mask_type]] == 1
+    bool_bitmask = bitmask_bits[:, :, idx_dict[mask_type]] == 1
 
-    return water_bitmask
+    return bool_bitmask
 
 def calculate_cloud_percentage(water_counts):
     '''
