@@ -51,23 +51,31 @@ def QA_cloud_perc(file_list, QA_band):
         QA = rasterio.open(fi).read(QA_band)
 
         # Find the boolean mask from the bit mask.
-        water_i = water_from_bitmask(QA)
+        water_i = mask_from_bitmask(QA, mask_type='water')
 
         # Simply sum the boolean masks to find the total counts
         water_count[i] = np.sum(water_i)
 
     return water_count
 
-def water_from_bitmask(bitmask):
+def mask_from_bitmask(bitmask, mask_type):
     '''
-    Converts a earth engine QA bitmask to a boolean array of water pixels.
+    Converts an earth engine QA bitmask to a boolean array of ``mask_type`` pixels.
     Bitmask array conversion from https://stackoverflow.com/questions/22227595/convert-integer-to-binary-array-with-suitable-padding
-    Arguments:
-    bitmask:np.ndarray, shape(pix_x, pix_y)
+    
+    Args:
+        bitmask (np.ndarray): ``shape(pix_x, pix_y)``
+        mask_type (str): String specifying kind of mask to return. Can be ``water``, ``cloud``, or ``shadow``.
 
-    returns:
-    water_bitmask : np.ndarray, shape(pix_x, pix_y). Boolean array of pixels where water is present 
+    Returns:
+        Boolean mask with shape ``shape(pix_x, pix_y)`` indicating pixels of ``mask_type.
     '''
+
+    idx_dict = {
+        "water" : 8,
+        "cloud" : 12,
+        "shadow" : 11,
+    }
 
     # number of bits to convert bitmask to 
     m = 16 
@@ -85,9 +93,9 @@ def water_from_bitmask(bitmask):
         bitmask_bits[:, :, bit_ix] = fetch_bit_func(strs).astype("int8")
 
     # The water bitmask is stored in bit 7 (index 15-7=8).
-    water_bitmask = bitmask_bits[:, :, 8] == 1
+    bool_bitmask = bitmask_bits[:, :, idx_dict[mask_type]] == 1
 
-    return water_bitmask
+    return bool_bitmask
 
 def calculate_cloud_percentage(water_counts):
     '''
@@ -105,3 +113,30 @@ def calculate_cloud_percentage(water_counts):
     cover_percents = 100*(water_counts / water_counts.max())
 
     return cover_percents
+
+def combine_bool_masks(mask_list):
+    '''
+    Combine boolean pixel masks with pixelwise ``and``.
+
+    Args:
+        mask_list (list): List of arrays. Each element of the list should be a
+         an array for a different mask (i.e. first element: cloud, second
+         element: water). The dimensions of the arrays needs to match. The
+          arrays also need to be consistenet in terms of what defines a masked
+          pixel (i.e. is ``True`` or ``False`` a masked pixel).
+    '''
+
+    # Stack masks into (n_mask, nx, ny) array
+    mask_array = np.stack(mask_list)
+
+    # Product along the fist axis.
+    # Results in an AND for each pixel.
+    combo_mask = np.prod(
+        mask_array,
+        axis=0
+        )
+
+    # Make the combined mask a bool for each pixel
+    combo_mask = combo_mask.astype(bool)
+
+    return combo_mask
